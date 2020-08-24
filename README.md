@@ -2,4 +2,12 @@
 
 [Play snake right now](https://nikolay-govorov.github.io/snake/)
 
-> Closed the Gestalt, made a snake without dependencies
+I've wanted a snake for a long time, and right now I'm drunk enough to close this Gestalt.
+
+# Build
+
+No build, no dependencies
+
+# Run
+
+Open the index.html in browser
