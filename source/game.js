@@ -1,6 +1,6 @@
 import { Snake } from "./snake.js";
-import { Board } from "./board.js";
 import { Render } from "./render.js";
+import { randomNumber } from "./utils.js";
 
 export class Game {
   constructor(canvas, options, onEnd) {
@@ -8,8 +8,7 @@ export class Game {
     this.onEnd = onEnd;
 
     this.snake = new Snake(options)
-    this.board = new Board(this.snake, options);
-    this.render = new Render(canvas, this.board, options);
+    this.render = new Render(canvas, options);
 
     const step = () => {
       this.step();
@@ -18,6 +17,7 @@ export class Game {
         setTimeout(() => window.requestAnimationFrame(step), this.options.speed);
     };
 
+    this.setEat();
     window.requestAnimationFrame(step);
   }
 
@@ -38,10 +38,23 @@ export class Game {
 
     if (this.checkEaten()) {
       this.snake.add();
-      this.board.setEat();
+      this.setEat();
     }
 
-    this.render.render();
+    this.render.render(this.snake, this.eat);
+  }
+
+  setEat() {
+    this.eat = {
+      x: randomNumber(0, this.options.boardSize - 1),
+      y: randomNumber(0, this.options.boardSize - 1),
+    };
+
+    if (
+      this.snake.cells.find(({ x, y }) => this.eat.x === x && this.eat.y === y)
+    ) {
+      return this.setEat();
+    }
   }
 
   isBoardFull() {
@@ -50,8 +63,8 @@ export class Game {
 
   checkEaten() {
     if (
-      this.snake.head.x === this.board.eat.x &&
-      this.snake.head.y === this.board.eat.y 
+      this.snake.head.x === this.eat.x &&
+      this.snake.head.y === this.eat.y 
     ) {
       return true;
     }

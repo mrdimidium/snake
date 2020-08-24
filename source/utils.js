@@ -13,9 +13,9 @@ export function randomOf(elements) {
 }
 
 export function throttle(func, ms) {
-  let isThrottled = false,
-    savedArgs,
-    savedThis;
+  let isThrottled = false;
+  let savedArgs = null;
+  let savedThis = null;
 
   return function wrapper() {
     if (isThrottled) {

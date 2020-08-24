@@ -10,8 +10,10 @@ export class Snake {
     this.options = options;
 
     this.direction = randomOf([
-      DIRECTION_UP, DIRECTION_DOWN,
-      DIRECTION_LEFT, DIRECTION_RIGHT,
+      DIRECTION_UP,
+      DIRECTION_DOWN,
+      DIRECTION_LEFT,
+      DIRECTION_RIGHT,
     ]);
 
     this.cells = [
@@ -41,41 +43,32 @@ export class Snake {
   }
 
   add() {
-    this.cells.push({
-      x: this.cells[this.cells.length - 1].x,
-      y: this.cells[this.cells.length - 1].y
-    });
+    const tail = this.cells[this.cells.length - 1];
+
+    this.cells.push({ ...tail });
   }
 
   step() {
-    const { boardSize } = this.options;
+    this.cells = [{ ...this.cells[0] }, ...this.cells.slice(0, this.cells.length - 1)];
 
-    this.cells = [Object.assign({}, this.cells[0]), ...this.cells];
-    this.cells.pop();
+    const [head] = this.cells;
+    if (this.direction === DIRECTION_LEFT)
+      head.x = this.normalize(head.x - 1);
 
-    const head = this.cells[0];
-    switch (this.direction) {
-      case DIRECTION_LEFT:
-        head.x -= 1;
-        break;
+    if (this.direction === DIRECTION_RIGHT)
+      head.x = this.normalize(head.x + 1);
 
-      case DIRECTION_RIGHT:
-        head.x += 1;
-        break;
+    if (this.direction === DIRECTION_UP)
+      head.y = this.normalize(head.y - 1);
 
-      case DIRECTION_UP:
-        head.y += 1;
-        break;
+    if (this.direction === DIRECTION_DOWN)
+      head.y = this.normalize(head.y + 1);    
+  }
 
-      case DIRECTION_DOWN:
-        head.y -= 1;
-        break;
-    }
+  normalize(data) {
+    if (data >= this.options.boardSize) return 0;
+    if (data < 0) return this.options.boardSize - 1;
 
-    if (head.x >= boardSize) head.x = 0
-    if (head.x < 0) head.x = boardSize - 1;
-
-    if (head.y >= boardSize) head.y = 0
-    if (head.y < 0) head.y = boardSize - 1;
+    return data;
   }
 }
